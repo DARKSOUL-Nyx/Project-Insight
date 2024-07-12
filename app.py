@@ -37,7 +37,7 @@ def generate_cover_letter(company_name, job_title):
         f"1. An introduction mentioning the job position and interest in the company.\n"
         f"2. A brief overview of relevant skills and experiences.\n"
         f"3. A conclusion with a call to action and gratitude.\n"
-        f"Use a formal and respectful tone."
+        f"Use a formal and respKectful tone."
     )
     response = palm.generate_text(model=model_name, prompt=prompt)
     return response.result
