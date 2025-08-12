@@ -80,33 +80,44 @@ async function postToPR(commentBody) {
 **/
 
 async function main() {
-    // Directly check the event name from the context.
     if (prContext.event_name !== 'pull_request') {
-        // When run by a 'push', this code runs...
-        console.log("This event was not a pull request. The trigger was:", prContext.event_name);
-        return; // ...and it stops right here.
+        console.log("This event was not a pull request. Skipping.");
+        return;
     }
 
-    
-    // 1. Get the URL for the diff from the PR context
-    const diffUrl = prContext.event.pull_request.diff_url; 
+    const diffUrl = prContext.payload.pull_request.diff_url;
     console.log(`Fetching diff from: ${diffUrl}`);
 
-    // 2. Fetch the actual code changes
     const diffResponse = await fetch(diffUrl, { headers: { 'Authorization': `Bearer ${GITHUB_TOKEN}` } });
     const diffText = await diffResponse.text();
 
     if (!diffText) {
-        console.log("Could not fetch diff or diff is empty.");
+        console.log("Could not fetch diff or diff is empty. Exiting.");
         return;
     }
 
-    // 3. Get the review from Gemini
+    // --- DEBUGGING STEP 1 ---
+    // Log the first 500 characters of the diff to confirm we have it.
+    console.log("--- Diff Found ---");
+    console.log(diffText.substring(0, 500) + "...");
+    console.log("--------------------");
+
     const review = await getGeminiReview(diffText);
 
-    // 4. Post the review back to the PR
-    await postToPR(review);
+    // --- DEBUGGING STEP 2 ---
+    // Log the raw response we get from Gemini before posting.
+    console.log("--- Gemini API Response ---");
+    console.log(review);
+    console.log("---------------------------");
+    
+    // Add a check to ensure the review is not empty
+    if (review && review.trim().length > 0) {
+        await postToPR(review);
+    } else {
+        console.log("Gemini response was empty or null. Nothing to post.");
+    }
 }
+
 
 // Run the main function
 main();
