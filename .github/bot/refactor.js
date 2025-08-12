@@ -57,7 +57,7 @@ async function getGeminiReview(diff) {
  * @param {string} commentBody - The content of the comment.
  */
 async function postToPR(commentBody) {
-    const prNumber = prContext.event.pull_request.number;
+    const prNumber = prContext.event.pull_request.comments_url;
     const commentsUrl = prContext.event.repository.comments_url.replace('{/number}', `/${prNumber}`);
 
     console.log(`Attempting to post comment to: ${commentsUrl}`);
