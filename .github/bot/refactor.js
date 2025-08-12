@@ -57,21 +57,34 @@ async function getGeminiReview(diff) {
  * @param {string} commentBody - The content of the comment.
  */
 async function postToPR(commentBody) {
-    const prNumber = prContext.event.pull_request.number;
-    const commentsUrl = prContext.event.repository.comments_url.replace('{/number}', `/${prNumber}`);
+    const prNumber = prContext.payload.pull_request.number;
+    const commentsUrl = prContext.payload.repository.comments_url.replace('{/number}', `/${prNumber}`);
+
+    console.log(`Attempting to post comment to: ${commentsUrl}`);
 
     try {
-        await fetch(commentsUrl, {
+        const response = await fetch(commentsUrl, {
             method: 'POST',
             headers: {
                 'Authorization': `Bearer ${GITHUB_TOKEN}`,
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Accept': 'application/vnd.github.v3+json' // Recommended header
             },
             body: JSON.stringify({ body: `### 🤖 Smart Refactor Suggestions\n\n${commentBody}` })
         });
-        console.log("Successfully posted comment to PR #" + prNumber);
+
+        // NEW: Check if the HTTP request was actually successful (status 2xx)
+        if (response.ok) {
+            console.log(`Successfully posted comment to PR #${prNumber}. GitHub API responded with status: ${response.status}`);
+        } else {
+            // NEW: If not successful, log the error details from GitHub's response
+            const errorBody = await response.text();
+            console.error(`Failed to post comment. GitHub API responded with status: ${response.status}`);
+            console.error("Error Response Body:", errorBody);
+        }
+
     } catch (error) {
-        console.error("Error posting PR comment:", error);
+        console.error("A network or execution error occurred while trying to post the comment:", error);
     }
 }
 
