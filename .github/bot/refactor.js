@@ -1,7 +1,7 @@
 // .github/bot/refactor.js
 
 // Using require for Node.js in compatibility in Github Actions 
-const fetch = require('node-fetch');
+import fetch from 'node-fetch';
 
 const {
     GITHUB_TOKEN,
