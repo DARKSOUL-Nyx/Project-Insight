@@ -57,8 +57,11 @@ async function getGeminiReview(diff) {
  * @param {string} commentBody - The content of the comment.
  */
 async function postToPR(commentBody) {
-    const prNumber = prContext.event.pull_request.comments_url;
-    const commentsUrl = prContext.event.repository.comments_url.replace('{/number}', `/${prNumber}`);
+    // THIS IS THE FIX:
+    // This variable already contains the full, correct URL like ".../issues/1/comments"
+    // No .replace() or other changes are needed.
+    const commentsUrl = prContext.event.pull_request.comments_url;
+    const prNumber = prContext.event.pull_request.number;
 
     console.log(`Attempting to post comment to: ${commentsUrl}`);
 
@@ -68,16 +71,14 @@ async function postToPR(commentBody) {
             headers: {
                 'Authorization': `Bearer ${GITHUB_TOKEN}`,
                 'Content-Type': 'application/json',
-                'Accept': 'application/vnd.github.v3+json' // Recommended header
+                'Accept': 'application/vnd.github.v3+json'
             },
             body: JSON.stringify({ body: `### 🤖 Smart Refactor Suggestions\n\n${commentBody}` })
         });
 
-        // NEW: Check if the HTTP request was actually successful (status 2xx)
         if (response.ok) {
             console.log(`Successfully posted comment to PR #${prNumber}. GitHub API responded with status: ${response.status}`);
         } else {
-            // NEW: If not successful, log the error details from GitHub's response
             const errorBody = await response.text();
             console.error(`Failed to post comment. GitHub API responded with status: ${response.status}`);
             console.error("Error Response Body:", errorBody);
