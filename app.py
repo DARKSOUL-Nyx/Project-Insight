@@ -1,7 +1,7 @@
 import streamlit as st
 import google.generativeai as palm
 
-palm.configure(api_key="AIzaSyBeAw6OA3eKc5N85_LHgkDUBRUIns5iH6s")
+palm.configure(api_key="")
 
 
 model_name = "models/text-bison-001"

@@ -80,16 +80,16 @@ async function postToPR(commentBody) {
 **/
 
 async function main() {
-    // --- NEW, MORE ROBUST FIX ---
     // Directly check the event name from the context.
     if (prContext.event_name !== 'pull_request') {
+        // When run by a 'push', this code runs...
         console.log("This event was not a pull request. The trigger was:", prContext.event_name);
-        console.log("Skipping Smart Refactor check.");
-        return; // Exit gracefully
+        return; // ...and it stops right here.
     }
+
     
     // 1. Get the URL for the diff from the PR context
-    const diffUrl = prContext.payload.pull_request.diff_url;
+    const diffUrl = prContext.payload.pull_request.diff_url; 
     console.log(`Fetching diff from: ${diffUrl}`);
 
     // 2. Fetch the actual code changes
