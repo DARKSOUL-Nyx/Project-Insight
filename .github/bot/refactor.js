@@ -85,7 +85,7 @@ async function main() {
         return;
     }
 
-    const diffUrl = prContext.payload.pull_request.diff_url;
+    const diffUrl = prContext.event.pull_request.diff_url;
     console.log(`Fetching diff from: ${diffUrl}`);
 
     const diffResponse = await fetch(diffUrl, { headers: { 'Authorization': `Bearer ${GITHUB_TOKEN}` } });
