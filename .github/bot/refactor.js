@@ -78,8 +78,17 @@ async function postToPR(commentBody) {
 /**
  * Main function to run the bot.
 **/
-
+/**
+ * Main function to run the bot.
+ */
 async function main() {
+    // --- FIX: Add a Guard Clause ---
+    // Check if the payload for a pull request exists.
+    if (!prContext.payload.pull_request) {
+        console.log("This event was not a pull request. Skipping refactor check.");
+        return; // Exit gracefully
+    }
+    
     // 1. Get the URL for the diff from the PR context
     const diffUrl = prContext.payload.pull_request.diff_url;
     console.log(`Fetching diff from: ${diffUrl}`);
