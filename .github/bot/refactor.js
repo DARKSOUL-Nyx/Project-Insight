@@ -59,7 +59,7 @@ async function getGeminiReview(diff) {
  */
 async function postToPR(commentBody) {
     const prNumber = prContext.event.pull_request.number;
-    const commentsUrl = prContext.payload.repository.comments_url.replace('{/number}', `/${prNumber}`);
+    const commentsUrl = prContext.event.repository.comments_url.replace('{/number}', `/${prNumber}`);
 
     try {
         await fetch(commentsUrl, {
@@ -90,7 +90,7 @@ async function main() {
 
     
     // 1. Get the URL for the diff from the PR context
-    const diffUrl = prContext.payload.pull_request.diff_url; 
+    const diffUrl = prContext.event.pull_request.diff_url; 
     console.log(`Fetching diff from: ${diffUrl}`);
 
     // 2. Fetch the actual code changes
