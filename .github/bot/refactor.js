@@ -78,14 +78,13 @@ async function postToPR(commentBody) {
 /**
  * Main function to run the bot.
 **/
-/**
- * Main function to run the bot.
- */
+
 async function main() {
-    // --- FIX: Add a Guard Clause ---
-    // Check if the payload for a pull request exists.
-    if (!prContext.payload.pull_request) {
-        console.log("This event was not a pull request. Skipping refactor check.");
+    // --- NEW, MORE ROBUST FIX ---
+    // Directly check the event name from the context.
+    if (prContext.event_name !== 'pull_request') {
+        console.log("This event was not a pull request. The trigger was:", prContext.event_name);
+        console.log("Skipping Smart Refactor check.");
         return; // Exit gracefully
     }
     
