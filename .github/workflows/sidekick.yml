@@ -5,6 +5,8 @@ name: AI Developer Sidekick
 on:
   pull_request:
     branches: [ main ]
+  release:
+    types: [ published ]
 
 jobs:
   refactor_and_review:

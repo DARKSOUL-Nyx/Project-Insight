@@ -1,18 +1,8 @@
-// Add this function to test the bot
-function inefficient_calculator(a, b) {
-  let result = 0;
-  if (a > 5) {
-    if (b > 5) {
-      if (a > b) {
-        result = a * a + b;
-      } else {
-        result = b * b + a;
-      }
-    } else {
-      result = a + b;
-    }
+// calculator.js
+function efficientCalculator(a, b) {
+  if (a > 5 && b > 5) {
+    return a > b ? a * a + b : b * b + a;
   } else {
-    result = a + b;
+    return a + b;
   }
-  return result;
 }
