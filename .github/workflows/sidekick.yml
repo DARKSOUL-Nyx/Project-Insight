@@ -1,0 +1,41 @@
+# .github/workflows/sidekick.yml
+
+name: AI Developer Sidekick
+
+on:
+  pull_request:
+    branches: [ main ]
+  release:
+    types: [ published ]
+
+jobs:
+  refactor_and_review:
+    name: Smart Refactor Check
+    runs-on: ubuntu-latest
+    # Grant permissions for the bot to read code and write comments
+    permissions:
+      contents: read
+      pull-requests: write
+
+    steps:
+      # Step 1: Check out the repository's code
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      # Step 2: Set up the Node.js environment to run our script
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      # Step 3: Install necessary libraries (in this case, for making API calls)
+      - name: Install Dependencies
+        run: npm install node-fetch
+
+      # Step 4: Run the bot script, providing it with necessary secrets and context
+      - name: Run Smart Refactor Bot
+        run: node .github/bot/refactor.js
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_CONTEXT: ${{ toJSON(github) }}
